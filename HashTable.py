@@ -1,14 +1,32 @@
 class HashTable:
     def __init__(self, buckets = 40):
+        """
+        Called upon creation of an object.
+        
+        :param buckets: The number of buckets the hash table should have.
+        """
         self.table = []
         for i in range(buckets):
             self.table.append([])
     
     def _get_hash(self, key):
+        """
+        Hashes a key to determine the appropriate bucket for the specified
+        key.
+        
+        :param key: The key to be hashed.
+        """
         bucket = int(key) % len(self.table)
         return bucket
     
     def insert(self, key, item):
+        """
+        Inserts a key-value pair into the hash table. Uses chaining to handle 
+        collisions. 
+        
+        :param key: The key to be inserted. 
+        :param item: The associated value.
+        """
         bucket = self._get_hash(key)
         bucket_list = self.table[bucket]
 
@@ -24,6 +42,11 @@ class HashTable:
         return True
     
     def lookup(self, key):
+        """
+        Looks up a key in the hash table.
+        
+        :param key: The key to be looked up.
+        """
         bucket = self._get_hash(key)
         bucket_list = self.table[bucket]
 

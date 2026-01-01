@@ -1,4 +1,14 @@
 def load(packages, num_trucks, capacity):
+    """
+    Initializes the specified number of trucks and loads the packages onto them
+    using a greedy algorithm that first focuses on handling packages with constraints,
+    then focuses on loading packages by earliest deadline.
+    
+    :param packages: A list of package objects.
+    :param num_trucks: The number of trucks available to be loaded.
+    :param capacity: The capacity of each truck (assume each truck has the same
+    capacity).
+    """
     # Step 1: Initialize Trucks and pending packages list
     trucks = [[] for _ in range(num_trucks)]
     pending_packages = []
