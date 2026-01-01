@@ -1,31 +1,37 @@
-import pandas as pd
-import Package.py
-
-# Skip the first 7 rows because they are the title rows.
-df = pd.read_csv("WGUPS Package File.xlsx - Sheet1.csv", skiprows = 7)
-# Clean up column names.
-df.columns = [
-    "ID", "Address", "City", "State", "Zip", "Deadline", "Weight", "Notes"
-]
-
 class HashTable:
-    def __init__(self):
-        self.hash_table = {}
+    def __init__(self, buckets = 40):
+        self.table = []
+        for i in range(buckets):
+            self.table.append([])
     
-    def insert_package(self, id):
-        components = df[df["ID"] == id]
-        pkg = Package(
-            components["Address"], 
-            components["Deadline"],
-            components["City"],
-            components["Zip"],
-            components["Weight"],
-            components["Notes"]
-        )
-        self.hash_table[id] = pkg
+    def _get_hash(self, key):
+        bucket = int(key) % len(self.table)
+        return bucket
     
-    def lookup(self, id):
-        return self.hash_table[id]
+    def insert(self, key, item):
+        bucket = self._get_hash(key)
+        bucket_list = self.table[bucket]
+
+        # Update if key already exists in this bucket
+        for kv in bucket_list:
+            if kv[0] == key:
+                kv[1] = item
+                return True
+        
+        # If not found, insert the item at the end of the bucket list
+        key_value = [key, item]
+        bucket_list.append(key_value)
+        return True
+    
+    def lookup(self, key):
+        bucket = self._get_hash(key)
+        bucket_list = self.table[bucket]
+
+        # Search for the key in the bucket
+        for kv in bucket_list:
+            if kv[0] == key:
+                return kv[1] # Returns the Package object
+        return None  # Not found
 
 
     
