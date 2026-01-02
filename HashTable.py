@@ -6,6 +6,7 @@ class HashTable:
         :param buckets: The number of buckets the hash table should have.
         """
         self.table = []
+        
         for i in range(buckets):
             self.table.append([])
     
@@ -18,6 +19,14 @@ class HashTable:
         """
         bucket = int(key) % len(self.table)
         return bucket
+
+    def __iter__(self):
+        """
+        Generator to iterate through all the items in the hash table.
+        """
+        for bucket in self.table:
+            for key_value in bucket:
+                yield key_value[1]
     
     def insert(self, key, item):
         """
@@ -54,6 +63,7 @@ class HashTable:
         for kv in bucket_list:
             if kv[0] == key:
                 return kv[1] # Returns the Package object
+            
         return None  # Not found
 
 

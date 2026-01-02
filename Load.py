@@ -1,17 +1,18 @@
-def load(packages, num_trucks, capacity):
+def load(packages, trucks):
     """
     Initializes the specified number of trucks and loads the packages onto them
     using a greedy algorithm that first focuses on handling packages with constraints,
     then focuses on loading packages by earliest deadline.
     
     :param packages: A list of package objects.
-    :param num_trucks: The number of trucks available to be loaded.
-    :param capacity: The capacity of each truck (assume each truck has the same
-    capacity).
+    :param trucks: A list of truck objects to be loaded. Assume Truck 1 is at 
+    index 0, Truck 2 is at index 1, and so on.
     """
-    # Step 1: Initialize Trucks and pending packages list
-    trucks = [[] for _ in range(num_trucks)]
+    # Step 1: Initialize pending packages list
     pending_packages = []
+    # Also initialize a list of overflow packages, in case we have more packages
+    # than available room on the trucks
+    overflow_packages = []
 
     # Step 2: Handle Packages with Notes
     deliver_together = [13, 14, 15, 16, 19, 20]
@@ -24,15 +25,17 @@ def load(packages, num_trucks, capacity):
         # to be delivered together to Truck 1 because Package 15 has a 9:00am 
         # deadline
         if p.ID in deliver_together:
-            trucks[0].append(p)
+            trucks[0].load_package(p)
         elif p.note == "Can only be on truck 2":
-            trucks[1].append(p)
+            trucks[1].load_package(p)
         elif p.note == "Wrong address listed":
-            trucks[2].append(p) # Truck 3 waits at the Hub for the correction
+            trucks[2].load_package(p) # Truck 3 waits at the Hub for the correction
         elif p.note == "Delayed on flight---will not arrive to depot until 9:05 am":
-            trucks[1].append(p) # Truck 2 waits at the Hub for the delayed packages
+            trucks[1].load_package(p) # Truck 2 waits at the Hub for the delayed packages
         else:
             pending_packages.append(p)
+        
+        p.update_status("en route")
     
     # Step 3: Handle Deadlines (Greedy Load)
     # Sort the pending packages list so that the packages with the earliest
@@ -41,11 +44,23 @@ def load(packages, num_trucks, capacity):
     # are placed on the trucks leaving the earliest
     pending_packages.sort(key = lambda x: x.deadline_military)
 
-    for p in pending_packages:
+    for i in range(len(pending_packages)):
+        p = pending_packages[i]
+
         for t in trucks:
-            if len(t) < capacity:
-                t.append(p)
+            # If the truck has capacity, its load function will return True and
+            # we can break the loop because the package was successfully loaded.
+            # If it returns False, that means there was no room on this truck so
+            # try the next one.
+            if t.load_package(p):
+                p.update_status("en route")
                 break
+        # If we get here, it means there was no room for this package on any
+        # truck, meaning no trucks have any capacity remaining. So the remaining
+        # pending packages are marked as overflow.
+        overflow_packages = pending_packages[i:]
     
-    return trucks
+    # Return overflow packages to facilitate checking whether all packages were
+    # loaded
+    return overflow_packages
     

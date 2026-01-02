@@ -23,8 +23,9 @@ class Package:
         self.weight = weight
         self.note = note
         self.status = status
-        self.delivery_time = None
+        self.delivery_time = None # Military time
         self.deadline_military = self.convert_deadline(self.deadline)
+        self.on_time_or_late = None
     
     def __str__(self):
         """
@@ -61,3 +62,18 @@ class Package:
             military = hours + mins
 
             return int(military)
+    
+    def update_status(self, status, del_time):
+        """
+        Updates the status of the package.
+        
+        :param status: String representing the new status of the package.
+        """
+        self.status = status
+        self.delivery_time = del_time
+        
+        if del_time <= self.deadline_military:
+            self.on_time_or_late = "On time"
+        else:
+            self.on_time_or_late = "Late"
+
