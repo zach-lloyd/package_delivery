@@ -6,6 +6,9 @@ def find_closest_package(current_address, packages_in_truck, distances):
     :param current_address: The address of the package currently being delivered.
     :param packages_in_truck: A list of the packages still on the truck.
     :param distances: A nested dictionary of the distances between addresses.
+
+    Returns: A tuple where the first element is the distance to the next closest
+    pacakage and the second element is the package object representing that package.
     """
     min_distance = float("inf")
     closest_package = None

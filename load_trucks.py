@@ -1,4 +1,4 @@
-def load(packages, trucks):
+def load_trucks(packages, trucks):
     """
     Initializes the specified number of trucks and loads the packages onto them
     using a greedy algorithm that first focuses on handling packages with constraints,
@@ -7,6 +7,9 @@ def load(packages, trucks):
     :param packages: A list of package objects.
     :param trucks: A list of truck objects to be loaded. Assume Truck 1 is at 
     index 0, Truck 2 is at index 1, and so on.
+
+    Returns: A list of 'overflow packages', which represent any packages that were
+    not able to be loaded onto the trucks.
     """
     # Step 1: Initialize pending packages list
     pending_packages = []

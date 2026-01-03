@@ -5,6 +5,9 @@ def load_distances(filename):
     Loads the data from the distances file into a nested dictionary.
     
     :param filename: Name of the distances file.
+
+    Returns: A nested dictionary containing the distances between each pair of
+    locations in the distances file.
     """
     distances = {}
 
@@ -58,4 +61,3 @@ def load_distances(filename):
                 distances[col_addr][row_addr] = distance
     
     return distances
-

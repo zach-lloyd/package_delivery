@@ -16,6 +16,8 @@ class HashTable:
         key.
         
         :param key: The key to be hashed.
+
+        Returns: A value representing the result of the hash function.
         """
         bucket = int(key) % len(self.table)
         return bucket
@@ -35,6 +37,8 @@ class HashTable:
         
         :param key: The key to be inserted. 
         :param item: The associated value.
+
+        Returns: True.
         """
         bucket = self._get_hash(key)
         bucket_list = self.table[bucket]
@@ -55,6 +59,8 @@ class HashTable:
         Looks up a key in the hash table.
         
         :param key: The key to be looked up.
+
+        Returns: The value associated with the key, if found, or None if not found.
         """
         bucket = self._get_hash(key)
         bucket_list = self.table[bucket]
@@ -65,6 +71,3 @@ class HashTable:
                 return kv[1] # Returns the Package object
             
         return None  # Not found
-
-
-    

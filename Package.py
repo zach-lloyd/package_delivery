@@ -40,6 +40,8 @@ class Package:
         an integer formatted in military time.
         
         :param dl: The package's deadline, formated as a string 'HH:MM A/PM'.
+
+        Returns: The package's deadline converted to military time.
         """
         if dl == "EOD":
             return 2400
@@ -63,17 +65,30 @@ class Package:
 
             return int(military)
     
-    def update_status(self, status, del_time):
+    def update_status(self, status, del_time = None):
         """
         Updates the status of the package.
         
         :param status: String representing the new status of the package.
+        :param del_time: If the package was delivered
+
+        Returns: True or False, depending on whether the package was delivered
+        or not.
         """
         self.status = status
         self.delivery_time = del_time
         
-        if del_time <= self.deadline_military:
+        if del_time is None:
+            return False
+        elif del_time <= self.deadline_military:
             self.on_time_or_late = "On time"
         else:
             self.on_time_or_late = "Late"
-
+        
+        return True
+    
+    def get_status(self):
+        """
+        Returns the package's current status.
+        """
+        return self.status
