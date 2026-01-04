@@ -1,7 +1,7 @@
 import csv
 from Package import Package
 
-def load_packages(filename, hash_table):
+def import_packages(filename, hash_table):
     """
     Loads the package data from the packages file into the hash table.
     

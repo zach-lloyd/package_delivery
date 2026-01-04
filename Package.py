@@ -1,3 +1,5 @@
+from convert_to_military_time import convert_to_military_time
+
 class Package:
     def __init__(self, ID, addr, deadline, city, state, zip, weight, note, status = "At the Hub"):
         """
@@ -24,8 +26,14 @@ class Package:
         self.note = note
         self.status = status
         self.delivery_time = None # Military time
-        self.deadline_military = self.convert_deadline(self.deadline)
+        # Convert the deadline to military time to faclitate arithmetic logic 
+        self.deadline_military = convert_to_military_time(self.deadline)
+        # Track whether the package was delivered on time or late, to faciliate
+        # assessing whether the algorithm succeeds in delivering each package by
+        # its deadline
         self.on_time_or_late = None
+        # The time the package leaves the Hub, in military time
+        self.departure_time = None 
     
     def __str__(self):
         """
@@ -33,37 +41,6 @@ class Package:
         """
         return f"{self.ID}, {self.addr}, {self.city}, {self.state}, {self.zip}, \
                  {self.deadline}, {self.weight}, {self.status}"
-    
-    def convert_deadline(self, dl):
-        """
-        Converts the package's deadlien from a string of format 'HH:MM A/PM' to
-        an integer formatted in military time.
-        
-        :param dl: The package's deadline, formated as a string 'HH:MM A/PM'.
-
-        Returns: The package's deadline converted to military time.
-        """
-        if dl == "EOD":
-            return 2400
-        else:
-            split_dl = dl.split(':')
-            # Make sure to remove any whitespace
-            split_dl[1] = split_dl[1].strip()
-
-            # Handle 12:00 PM and 12:00 AM edge cases
-            if split_dl[1][-2:] == "PM" and split_dl[0] != "12":
-                split_dl[0] = str(int(split_dl[0]) + 12)
-            elif split_dl[1][-2:] == "AM" and split_dl[0] == "12":
-                split_dl[0] = "0"
-            
-            if len(split_dl[0]) == 1:
-                split_dl[0] = "0" + split_dl[0]
-            
-            hours = split_dl[0]
-            mins = split_dl[1][0:2]
-            military = hours + mins
-
-            return int(military)
     
     def update_status(self, status, del_time = None):
         """
@@ -81,7 +58,7 @@ class Package:
         if del_time is None:
             return False
         elif del_time <= self.deadline_military:
-            self.on_time_or_late = "On time"
+            self.on_time_or_late = "On Time"
         else:
             self.on_time_or_late = "Late"
         
@@ -92,3 +69,41 @@ class Package:
         Returns the package's current status.
         """
         return self.status
+    
+    def get_on_time_or_late(self):
+        """
+        If the package has been delivered, returns a string indicating whether
+        it was delivered on time or late. If the package has not been delivered,
+        returns None. 
+        """
+        return self.on_time_or_late
+    
+    def get_status_at_time(self, time_query):
+        """
+        Gets the package's status at the time specified in the user's time query.
+
+        :param time_query: Time for which the user requests a snapshot of the 
+        package statuses, expressed in military time.
+
+        Returns: The status of the package at the queried time (either Delivered,
+        En Route, or At the Hub).
+        """
+        # If delivered, check if the delivery happened before the query time
+        if self.delivery_time and self.delivery_time <= time_query:
+            return "Delivered"
+        # If not delivered yet, check if the truck has left
+        elif self.departure_time and self.departure_time <= time_query:
+            return "En Route"
+        # Otherwise, it's still at the Hub
+        else:
+            return "At the Hub"
+    
+    def set_departure_time(self, time):
+        """
+        Sets the time at which the package departed from the Hub, in military 
+        time.
+        
+        :param time: The time at which the package departed from the Hub, in 
+        military time.
+        """
+        self.departure_time = time

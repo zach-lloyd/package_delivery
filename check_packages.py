@@ -14,11 +14,14 @@ def check_packages(packages):
     for p in packages:
         status = p.get_status()
 
-        if status == "On time":
-            on_time += 1
-        elif status == "Late":
-            late += 1
-        elif status == "At the Hub" or status == "En Route":
+        if status == "Delivered":
+            on_time_or_late = p.get_on_time_or_late()
+
+            if on_time_or_late == "On Time":
+                on_time += 1
+            elif on_time_or_late == "Late":
+                late += 1
+        else:
             not_delivered += 1
     
     return on_time, late, not_delivered

@@ -157,6 +157,7 @@ class Truck:
         # should be updated from "At the Hub" to "En Route"
         for p in self.packages:
             p.update_status("En Route")
+            p.set_departure_time(self.departure_time)
         
         self.create_snapshot(self.current_time)
 
@@ -174,3 +175,4 @@ class Truck:
                 self.create_snapshot(self.current_time)
                 
                 return self.current_time, self.miles_travelled
+    

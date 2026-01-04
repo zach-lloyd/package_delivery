@@ -1,4 +1,4 @@
-class HashTable:
+class CustomHashTable:
     def __init__(self, buckets = 40):
         """
         Called upon creation of an object.

@@ -1,6 +1,6 @@
 import csv
 
-def load_distances(filename):
+def import_distances(filename):
     """
     Loads the data from the distances file into a nested dictionary.
     

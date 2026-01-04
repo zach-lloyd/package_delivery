@@ -37,9 +37,7 @@ def load_trucks(packages, trucks):
             trucks[1].load_package(p) # Truck 2 waits at the Hub for the delayed packages
         else:
             pending_packages.append(p)
-        
-        p.update_status("en route")
-    
+            
     # Step 3: Handle Deadlines (Greedy Load)
     # Sort the pending packages list so that the packages with the earliest
     # deadlines are loaded first. Truck 1 leaves before Truck 2 and Truck 2
@@ -56,7 +54,6 @@ def load_trucks(packages, trucks):
             # If it returns False, that means there was no room on this truck so
             # try the next one.
             if t.load_package(p):
-                p.update_status("en route")
                 break
         # If we get here, it means there was no room for this package on any
         # truck, meaning no trucks have any capacity remaining. So the remaining

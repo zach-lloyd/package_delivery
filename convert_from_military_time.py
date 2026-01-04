@@ -1,4 +1,4 @@
-def convert_military_time(time):
+def convert_from_military_time(time):
     """
     Converts military time to HH:MM A/P.M. format.
     
