@@ -33,7 +33,9 @@ class Package:
         # its deadline
         self.on_time_or_late = None
         # The time the package leaves the Hub, in military time
-        self.departure_time = None 
+        self.departure_time = None
+        # ID of the truck that the package is loaded to
+        self.truck_id = None 
     
     def __str__(self):
         """
@@ -107,3 +109,11 @@ class Package:
         military time.
         """
         self.departure_time = time
+    
+    def set_truck_id(self, id):
+        """
+        Identifies the ID of the truck the package is loaded to.
+
+        :param id: ID of the truck the package is loaded to.
+        """
+        self.truck_id = id

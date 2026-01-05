@@ -1,7 +1,7 @@
 from find_closest_package import find_closest_package
 
 class Truck:
-    def __init__(self, capacity, mph):
+    def __init__(self, ID, capacity, mph, hub_address):
         """
         Called upon creation of a Truck object.
         
@@ -9,6 +9,7 @@ class Truck:
         :param departure_time: The time the truck will leave.
         :param mph: Average speed of the truck.
         """
+        self.id = ID
         self.capacity = capacity
         # Will store the time the truck departs in military time. Initially None
         # because the truck's departure time is not set until it actually leaves.
@@ -21,9 +22,9 @@ class Truck:
         self.packages = []
         self.mph = mph
         self.miles_travelled = 0
+        self.hub_address = hub_address
         # Every truck starts out at the Hub
-        self.current_location = "4001 South 700 East"
-        self.snapshots = {} 
+        self.current_location = hub_address
     
     def set_departure_time(self, time):
         """
@@ -92,7 +93,7 @@ class Truck:
         self.current_location = next_package.addr
         self.miles_travelled += distance
         self.update_time(distance)
-        next_package.update_status("delivered", self.current_time)
+        next_package.update_status("Delivered", self.current_time)
         self.packages.remove(next_package)
 
         return True
@@ -103,44 +104,9 @@ class Truck:
         
         :param distances: A nested dictionary of distances between locations.
         """
-        distance = distances[self.current_location]["4001 South 700 East"]
+        distance = distances[self.current_location][self.hub_address]
         self.update_time(distance)
-        self.current_location = "4001 South 700 East"
-    
-    def create_snapshot(self, time):
-        """
-        Creates a snapshot of the truck's package statuses and miles travelled
-        at the specified time.
-        
-        :param time: Time, in military time, at which to create the snapshot.
-        """
-        package_statuses = {}
-
-        for p in self.packages:
-            package_statuses[p.ID] = p.status
-        
-        self.snapshots[time] = (package_statuses, self.miles_travelled)
-    
-    def get_snapshot(self, time):
-        """
-        Returns a snapshot of the truck's package statuses and miles travelled
-        at the time specified or, if a snapshot at that exact time is not 
-        available, at the time in the snapshot dictionary that is closest to
-        (but not after) the specified time. In other words, if time = 1330 and
-        the snapshot dictionary has snapshots for 1312 and 1345 but not 1330,
-        the snapshot for 1312 is returned.
-        
-        :param time: Time of the snapshot that is being requested.
-        """
-        if time in self.snapshots:
-            return self.snapshots[time]
-        else:
-            closest_time = max(
-                (tm for tm in self.snapshots if tm <= time), 
-                default=None
-            )
-
-            return self.snapshots[closest_time]
+        self.current_location = self.hub_address
 
     def deliver_packages(self, distances):
         """
@@ -159,20 +125,14 @@ class Truck:
             p.update_status("En Route")
             p.set_departure_time(self.departure_time)
         
-        self.create_snapshot(self.current_time)
-
         while True:
             delivered = self.deliver_next_package(distances)
-
-            if delivered:
-                self.create_snapshot(self.current_time)
 
             # If deliver_next_package returns False, it measn there are no 
             # more packages for this truck to deliver, so it can return to
             # the Hub
             if not delivered:
                 self.return_to_hub(distances)
-                self.create_snapshot(self.current_time)
                 
                 return self.current_time, self.miles_travelled
     

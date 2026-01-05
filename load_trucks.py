@@ -29,12 +29,16 @@ def load_trucks(packages, trucks):
         # deadline
         if p.ID in deliver_together:
             trucks[0].load_package(p)
+            p.set_truck_id(1)
         elif p.note == "Can only be on truck 2":
             trucks[1].load_package(p)
+            p.set_truck_id(2)
         elif p.note == "Wrong address listed":
             trucks[2].load_package(p) # Truck 3 waits at the Hub for the correction
+            p.set_truck_id(3)
         elif p.note == "Delayed on flight---will not arrive to depot until 9:05 am":
             trucks[1].load_package(p) # Truck 2 waits at the Hub for the delayed packages
+            p.set_truck_id(2)
         else:
             pending_packages.append(p)
             
@@ -47,6 +51,7 @@ def load_trucks(packages, trucks):
 
     for i in range(len(pending_packages)):
         p = pending_packages[i]
+        package_loaded = False
 
         for t in trucks:
             # If the truck has capacity, its load function will return True and
@@ -54,11 +59,17 @@ def load_trucks(packages, trucks):
             # If it returns False, that means there was no room on this truck so
             # try the next one.
             if t.load_package(p):
+                package_loaded = True
+                p.set_truck_id(t.id)
                 break
-        # If we get here, it means there was no room for this package on any
-        # truck, meaning no trucks have any capacity remaining. So the remaining
-        # pending packages are marked as overflow.
-        overflow_packages = pending_packages[i:]
+
+        # Safety check to make sure all packages are loaded. If any are not, mark
+        # them as overflow. main.py will use this to print a warning to the user.
+        if not package_loaded:
+            overflow_packages = pending_packages[i:]
+            # Once we know one package can't be loaded, we know all trucks are full,
+            # so no need to try to load additional packages.
+            break
     
     # Return overflow packages to facilitate checking whether all packages were
     # loaded

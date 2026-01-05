@@ -15,15 +15,14 @@ def import_distances(filename):
         reader = csv.reader(csvfile)
         rows = list(reader)
 
-        # The first 7 rows are not part of the table
-        header_row = rows[7]
+        # The first 4 rows are not part of the table
+        header_row = rows[4]
         addresses = []
 
         # Slice [2:] because this function will get the addresses from the column
         # headers, not the rows. The column headers of the first two rows do not
         # contain addresses, so we don't need them
         for raw_addr in header_row[2:]:
-
             # Each column header has multiple lines. The first line is the name
             # of the hub and the second line is the address. The second line is
             # what we want
@@ -40,7 +39,7 @@ def import_distances(filename):
         for addr in addresses:
             distances[addr] = {}
         
-        for i, row in enumerate(rows[8:]):
+        for i, row in enumerate(rows[5:]):
             if i >= len(addresses): # Safety break if there are extra empty rows
                 break
 

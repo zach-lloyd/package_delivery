@@ -13,6 +13,7 @@ PACKAGES_FILENAME = "WGUPS Package File.csv"
 DISTANCES_FILENAME = "WGUPS Distance Table.csv"
 CAPACITY = 16
 MPH = 18
+HUB_ADDRESS = "4001 South 700 East"
 
 # Truck 1 will handle the package with a 9:00 AM deadline and will not be 
 # loaded with any packages that are arriving late, so it leaves ASAP
@@ -25,26 +26,32 @@ TRUCK2_DEPARTURE_TIME = 905
 # it's deliveries first (probably Truck 1, but we don't want to assume that)
 TRUCK3_DEPARTURE_TIME = None
 
+TRUCK1_ID = 1
+TRUCK2_ID = 2
+TRUCK3_ID = 3
+
 def main():
     # Step 1: Initialize the hash table with one bucket for each package
-    hash_table = CustomHashTable(40)
+    packages = CustomHashTable(40)
 
     # Step 2: Read the data from the packages and distances files
-    packages = import_packages(PACKAGES_FILENAME, hash_table)
+    import_packages(PACKAGES_FILENAME, packages)
     distances = import_distances(DISTANCES_FILENAME)
 
     # Step 3: Create the truck objects. For this project, there are three trucks,
     # so we create three objects
-    truck1 = Truck(CAPACITY, MPH)
-    truck2 = Truck(CAPACITY, MPH)
-    truck3 = Truck(CAPACITY, MPH)
+    truck1 = Truck(TRUCK1_ID, CAPACITY, MPH, HUB_ADDRESS)
+    truck2 = Truck(TRUCK2_ID, CAPACITY, MPH, HUB_ADDRESS)
+    truck3 = Truck(TRUCK3_ID, CAPACITY, MPH, HUB_ADDRESS)
 
     # Step 4: Load the packages onto the trucks and check for any packages that
     # weren't loaded
     overflow = load_trucks(packages, [truck1, truck2, truck3])
 
     if overflow:
-        print(f"Warning: {len(overflow)} packages were not loaded!")
+        print(f"Warning: the following packages were not loaded:")
+        for pkg in overflow:
+            print(pkg.addr)
 
     # Step 5: Set Truck 1 and 2 departure times and deliver their packages
     truck1.set_departure_time(TRUCK1_DEPARTURE_TIME)
@@ -78,7 +85,7 @@ def main():
 
     # Step 9: Run the user interface to allow the user to check the status of
     # packages at any time
-    user_interface(hash_table)
+    user_interface(packages)
 
 if __name__ == "__main__":
     main()
