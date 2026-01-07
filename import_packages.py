@@ -12,7 +12,7 @@ def import_packages(filename, hash_table):
         reader = csv.reader(csvfile)
         rows = list(reader)
 
-        for i, row in enumerate(rows[8:]):
+        for i, row in enumerate(rows[5:]):
             if row[0] == "": # Safety break if there are extra empty rows
                 break
             
@@ -24,7 +24,7 @@ def import_packages(filename, hash_table):
             deadline = row[5]
             weight = row[6]
             note = row[7]
-            status = "At the Hub" # Each package starts out at the hub
+            status = "In Transit to Hub" # Each package starts out in transit to the hub
 
             pkg = Package(id, address, deadline, city, state, zip, weight, note, status)
             hash_table.insert(id, pkg)

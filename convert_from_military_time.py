@@ -9,14 +9,25 @@ def convert_from_military_time(time):
     """
     hours = time // 100
     mins = time % 100
+
+    hours_string = ""
+    mins_string = ""
     am_or_pm = "AM"
 
     if hours == 0:
-        hours = 12
+        hours_string = "12"
     elif hours == 12:
+        hours_string = "12"
         am_or_pm = "PM"
     elif hours > 12:
+        hours_string = str(hours - 12) 
         am_or_pm = "PM"
-        hours -= 12
+    else:
+        hours_string = str(hours)
+
+    if mins < 10: 
+        mins_string = "0" + str(mins)
+    else:
+        mins_string = str(mins)        
     
-    return f"{str(hours)}:{str(mins)} {am_or_pm}"
+    return f"{hours_string}:{mins_string} {am_or_pm}"

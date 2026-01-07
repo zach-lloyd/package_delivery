@@ -1,6 +1,6 @@
 def load_trucks(packages, trucks):
     """
-    Initializes the specified number of trucks and loads the packages onto them
+    Initializes the specified number of trucks and loads the packages to each of them
     using a greedy algorithm that first focuses on handling packages with constraints,
     then focuses on loading packages by earliest deadline.
     
@@ -9,7 +9,7 @@ def load_trucks(packages, trucks):
     index 0, Truck 2 is at index 1, and so on.
 
     Returns: A list of 'overflow packages', which represent any packages that were
-    not able to be loaded onto the trucks.
+    not able to be loaded to a truck.
     """
     # Step 1: Initialize pending packages list
     pending_packages = []
@@ -25,7 +25,7 @@ def load_trucks(packages, trucks):
     # loading the packages that have notes
     for p in packages:
         # Truck 1 will leave the earliest, so add all of the packages that need
-        # to be delivered together to Truck 1 because Package 15 has a 9:00am 
+        # to be delivered together to Truck 1 because Package 15 has a 9:00 AM 
         # deadline
         if p.ID in deliver_together:
             trucks[0].load_package(p)

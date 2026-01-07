@@ -1,7 +1,18 @@
 from convert_to_military_time import convert_to_military_time
 
 class Package:
-    def __init__(self, ID, addr, deadline, city, state, zip, weight, note, status = "At the Hub"):
+    def __init__(
+            self, 
+            ID, 
+            addr, 
+            deadline, 
+            city, 
+            state, 
+            zip, 
+            weight, 
+            note, 
+            status 
+    ):
         """
         Called upon creation of an object.
         
@@ -25,6 +36,7 @@ class Package:
         self.weight = weight
         self.note = note
         self.status = status
+        self.arrival_time = None # Military time
         self.delivery_time = None # Military time
         # Convert the deadline to military time to faclitate arithmetic logic 
         self.deadline_military = convert_to_military_time(self.deadline)
@@ -42,7 +54,8 @@ class Package:
         Prints a formatted string containing all of the package's information.
         """
         return f"{self.ID}, {self.addr}, {self.city}, {self.state}, {self.zip}, \
-                 {self.deadline}, {self.weight}, {self.status}"
+                 {self.deadline}, {self.weight}, {self.status}, {self.arrival_time}, \
+                 {self.departure_time}"
     
     def update_status(self, status, del_time = None):
         """
@@ -96,9 +109,41 @@ class Package:
         # If not delivered yet, check if the truck has left
         elif self.departure_time and self.departure_time <= time_query:
             return "En Route"
+        # If the time query is before the time the package arrives at the hub, it
+        # is listed as in transit to the hub
+        elif self.arrival_time is None or self.arrival_time > time_query:
+            return "In Transit to Hub"
         # Otherwise, it's still at the Hub
         else:
             return "At the Hub"
+    
+    def get_delivery_time_at_time(self, time_query):
+        """
+        Accepts a time query from the user and, if the package was delivered at
+        or prior to that time, returns the package's delivery time. Otherwise it
+        returns 'TBD', reflecting that the package's delivery time is still to be
+        determined.
+        
+        :param time_query: Time for which the user requested a snapshot of the 
+        package statuses, expressed in military time.
+
+        Returns: Either the package's delivery time, if it was delivered at or 
+        before the time entered by the user, or 'TBD' if the package has not yet
+        been delivered.
+        """
+        if self.delivery_time <= time_query:
+            return self.delivery_time
+        else:
+            return "TBD"
+    
+    def set_arrival_time(self, time):
+        """
+        Sets the time the package arrived at the Hub, in military time.
+        
+        :param time: The time at which the package arrived at the Hub, in 
+        military time.
+        """
+        self.arrival_time = time
     
     def set_departure_time(self, time):
         """
@@ -117,3 +162,19 @@ class Package:
         :param id: ID of the truck the package is loaded to.
         """
         self.truck_id = id
+    
+    def update_address(self, addr):
+        """
+        Updates the packgage's delivery address.
+        
+        :param addr: The corrected delivery address for the package.
+        """
+        self.addr = addr
+
+    def update_zip(self, zip):
+        """
+        Updates the package's delivery zip code.
+        
+        :param zip: The corrected zip code for the package.
+        """
+        self.zip = zip
