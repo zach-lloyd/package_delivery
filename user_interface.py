@@ -38,12 +38,19 @@ def user_interface(hash_table):
                     t_id = package.truck_id
                 
                 # If the package's delivery time is not TBD, it means it has been
-                # delivered, so get that delivery time for display to the user.
+                # delivered, so get that delivery time for display to the user
                 if del_time != "TBD":
                     del_time = convert_from_military_time(del_time)
                 
+                package_address = package.addr
+                
+                # Ensure Package 9's address does not show as having been updated
+                # until 10:20 AM
+                if package.ID == 9 and converted_time < 1020:
+                    package_address = "300 State St"
+                
                 print(f"{package.ID:<4} {package_status_at_time:<17} \
-                        {package.addr:<40} {package.deadline:<10} \
+                        {package_address:<40} {package.deadline:<10} \
                         {del_time:<10} {t_id}")
 
         # Handle situation where the user does not enter the time in the expected
