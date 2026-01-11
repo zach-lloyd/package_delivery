@@ -100,6 +100,15 @@ use of AI to parse package notes and adjust truck assignments based on constrain
 ---
 
 ## Screenshots of CLI
+
+**Final Delivery Summary**
+
+![Final Delivery Summary](screenshots/final_summary.png)
+
+**Package Statuses at a Specified Time**
+
+![Package Status Lookup](screenshots/package_statuses.png)
+
 ---
 
 ## License
