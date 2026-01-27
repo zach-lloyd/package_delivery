@@ -41,7 +41,7 @@ Key modules/files:
 
 ---
 
-## How It Works (High Level)
+## How It Works
 
 1. **Load data**
    - Packages are loaded from CSV into a hash table for quick access. The hash table is implemented via a custom HashTable class.
